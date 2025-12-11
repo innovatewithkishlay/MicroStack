@@ -1,0 +1,168 @@
+{
+    "info": {
+        "_postman_id": "microstack-collection",
+        "name": "MicroStack",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Register",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost/auth/register",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "path": [
+                        "auth",
+                        "register"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Login",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "var jsonData = pm.response.json();",
+                            "pm.environment.set(\"token\", jsonData.token);"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost/auth/login",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "path": [
+                        "auth",
+                        "login"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Me",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "http://localhost/auth/me",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "path": [
+                        "auth",
+                        "me"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Upload File",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "file",
+                            "type": "file",
+                            "src": []
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "http://localhost/file/upload",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "path": [
+                        "file",
+                        "upload"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Send Notification",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"to\": \"test@example.com\",\n    \"subject\": \"Test Notification\",\n    \"message\": \"Hello from MicroStack\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost/notify/email",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "path": [
+                        "notify",
+                        "email"
+                    ]
+                }
+            },
+            "response": []
+        }
+    ]
+}
