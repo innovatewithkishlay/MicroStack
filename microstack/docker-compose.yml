@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  gateway:
+    build:
+      context: ./microstack/gateway
+    ports:
+      - "80:80"
+    depends_on:
+      - auth-service
+      - file-service
+      - notification-service
+    networks:
+      - microstack-network
+
+  auth-service:
+    build:
+      context: ./microstack/auth-service
+    environment:
+      - PORT=4001
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/microstack?schema=public
+      - JWT_SECRET=supersecretkey
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - microstack-network
+
+  file-service:
+    build:
+      context: ./microstack/file-service
+    environment:
+      - PORT=4002
+      - JWT_SECRET=supersecretkey
+    volumes:
+      - ./microstack/file-service/uploads:/app/uploads
+    networks:
+      - microstack-network
+
+  notification-service:
+    build:
+      context: ./microstack/notification-service
+    environment:
+      - PORT=4003
+      - REDIS_URL=redis://redis:6379
+      - SMTP_HOST=smtp.ethereal.email
+      - SMTP_PORT=587
+      - SMTP_USER=test
+      - SMTP_PASS=test
+    depends_on:
+      - redis
+    networks:
+      - microstack-network
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=microstack
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - microstack-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    networks:
+      - microstack-network
+
+networks:
+  microstack-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

@@ -1,0 +1,76 @@
+name: MicroStack CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: microstack
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install Dependencies (Auth Service)
+      run: |
+        cd microstack/auth-service
+        npm ci
+
+    - name: Install Dependencies (File Service)
+      run: |
+        cd microstack/file-service
+        npm ci
+
+    - name: Install Dependencies (Notification Service)
+      run: |
+        cd microstack/notification-service
+        npm ci
+
+    - name: Run Prisma Migrations
+      run: |
+        cd microstack/auth-service
+        npx prisma db push
+      env:
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/microstack
+
+    - name: Run Auth Service Tests
+      run: |
+        cd microstack/auth-service
+        npm test
+
+    - name: Run File Service Tests
+      run: |
+        cd microstack/file-service
+        npm test
+
+    - name: Run Notification Service Tests
+      run: |
+        cd microstack/notification-service
+        npm test
