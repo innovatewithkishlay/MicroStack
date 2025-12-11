@@ -1,0 +1,10 @@
+node_modules
+.env
+dist
+coverage
+.DS_Store
+readme
+microstack/auth-service/node_modules
+microstack/file-service/node_modules
+microstack/notification-service/node_modules
+microstack/file-service/uploads
