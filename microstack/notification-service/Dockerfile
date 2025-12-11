@@ -1,11 +1,14 @@
-FROM node:18-alpine
+FROM node:18-bullseye
 
 WORKDIR /app
 
+# Copy package files first
 COPY package*.json ./
 
-RUN npm install --production
+# Install dependencies
+RUN npm install
 
+# Copy application code
 COPY . .
 
 EXPOSE 4003

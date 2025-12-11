@@ -3,7 +3,7 @@ version: '3.8'
 services:
   gateway:
     build:
-      context: ./microstack/gateway
+      context: ./gateway
     ports:
       - "80:80"
     depends_on:
@@ -15,7 +15,7 @@ services:
 
   auth-service:
     build:
-      context: ./microstack/auth-service
+      context: ./auth-service
     environment:
       - PORT=4001
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/microstack?schema=public
@@ -28,18 +28,18 @@ services:
 
   file-service:
     build:
-      context: ./microstack/file-service
+      context: ./file-service
     environment:
       - PORT=4002
       - JWT_SECRET=supersecretkey
     volumes:
-      - ./microstack/file-service/uploads:/app/uploads
+      - ./file-service/uploads:/app/uploads
     networks:
       - microstack-network
 
   notification-service:
     build:
-      context: ./microstack/notification-service
+      context: ./notification-service
     environment:
       - PORT=4003
       - REDIS_URL=redis://redis:6379
