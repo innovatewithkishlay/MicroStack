@@ -1,5 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { sign } = require('../utils/jwt');
 const AppError = require('../utils/errors');
 
