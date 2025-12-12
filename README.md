@@ -1,4 +1,4 @@
-# 🚀 MicroStack — A Fully Deployed Microservices Architecture (Auth + File Upload + Notifications)
+#  MicroStack: A Fully Deployed Microservices Architecture (Auth + File Upload + Notifications)
 
 MicroStack is a **production-style microservices architecture** built using:
 
